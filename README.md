@@ -1,4 +1,4 @@
-# 📋 TaskMaster Kanban
+# 📋 TaskMaster
 
 **TaskMaster** es un tablero de gestión de proyectos estilo Kanban diseñado para organizar tareas de forma visual y eficiente. Esta aplicación combina la potencia lógica de **Python** con la flexibilidad de **HTML/CSS** para ofrecer una experiencia de usuario fluida y profesional.
 
