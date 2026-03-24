@@ -1,33 +1,35 @@
-# 📋 TaskMaster
+# 📋 TaskMaster: Visual Kanban Workflow Manager
 
-**TaskMaster** es un tablero de gestión de proyectos estilo Kanban diseñado para organizar tareas de forma visual y eficiente. Esta aplicación combina la potencia lógica de **Python** con la flexibilidad de **HTML/CSS** para ofrecer una experiencia de usuario fluida y profesional.
+**TaskMaster** is a professional-grade task management tool based on the **Kanban methodology**. Developed with **Python** and **Streamlit**, it provides a streamlined visual environment to track your productivity from inception to completion.
 
-## 🚀 Características Principales
+## ✨ Key Features
+- 🔄 **4-Stage Dynamic Workflow**: Organize your tasks through **Pending**, **In Progress**, **Finished**, and **Archived** columns.
+- 🎨 **Custom UI/UX**: Enhanced visual experience using **HTML5 and CSS3 injection** for professional, color-coded task cards.
+- ⚡ **Priority Hierarchy**: Visual indicators for **High**, **Medium**, and **Low** priorities to help you focus on what matters most.
+- 💾 **Data Persistence**: Automatic state-saving to a `kanban_data.json` file, ensuring no task is ever lost.
+- 🗑️ **Management Tools**: Easily move tasks between stages or permanently delete them with a single click.
 
-- **Tablero Dinámico**: Flujo de trabajo dividido en 4 columnas (Pendiente, En Proceso, Terminado y Archivado).
-- **Priorización Visual**: Sistema de tarjetas con bordes de colores automáticos según la importancia (Alta, Media, Baja).
-- **Interfaz Personalizada**: Uso de inyección de estilos CSS para mejorar la jerarquía visual y el contraste.
-- **Persistencia de Datos**: Almacenamiento local automático mediante archivos JSON.
-- **Ciclo de Vida de Tareas**: Desde la creación en el panel lateral hasta el borrado definitivo desde la papelera de reciclaje (Archivados).
+## 🛠️ Technologies Used
+- **Python 3.10+**
+- **Streamlit** (Web framework)
+- **HTML5 & CSS3** (Custom UI styling)
+- **JSON** (Local data storage)
 
-## 🛠️ Tecnologías Utilizadas
+## 🚀 Installation and Usage
 
-- **Lenguaje:** Python 3.x
-- **Framework Web:** Streamlit
-- **Diseño:** HTML5 & CSS3 (Custom Styling)
-- **Base de Datos:** JSON (Persistencia local)
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/mrg0995/taskmaster-kanban.git](https://github.com/mrg0995/taskmaster-kanban.git)
 
-## 🎨 Diseño Visual (UI)
-La aplicación utiliza una paleta de colores pastel para facilitar la lectura:
-- 🔴 **Rojo Coral:** Tareas Pendientes.
-- 🟡 **Amarillo Girasol:** Tareas en Proceso.
-- 🟢 **Verde Esmeralda:** Tareas Terminadas.
-
-## ⚙️ Instalación y Uso
-
-1. Instala Streamlit si aún no lo tienes:
+2. Install dependencies:
    ```bash
    pip install streamlit
-2 . Ejecuta la aplicación:
+   
+3. Run the application:
    ```bash
    streamlit run taskmaster.py
+
+✒️ Author
+Mario Ramírez - mrg0995
+
+"Efficiency is doing things right; effectiveness is doing the right things." 📋
