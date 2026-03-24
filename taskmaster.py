@@ -2,24 +2,23 @@ import streamlit as st
 import json
 import os
 
-# --- 1. CONFIGURACIÓN Y ESTILO ---
+# --- 1. CONFIGURATION AND STYLE ---
 st.set_page_config(page_title="TaskMaster Kanban", layout="wide", page_icon="📋")
 
-# Aquí es donde practicas CSS: definimos cómo se ve cada "tarjeta" de tarea
 st.markdown("""
     <style>
-    /* Estilo para los títulos de las columnas (las cajas de arriba) */
-    .header-pendiente { 
+    /* Column header styles */
+    .header-pending { 
         background-color: #ff6b6b; color: white; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px;
     }
-    .header-proceso { 
+    .header-progress { 
         background-color: #feca57; color: white; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px;
     }
-    .header-terminado { 
+    .header-finished { 
         background-color: #1dd1a1; color: white; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px;
     }
     
-    /* Estilo de las tarjetas de tareas */
+    /* Task card styles */
     .task-card {
         background-color: white;
         border-radius: 8px;
@@ -27,89 +26,91 @@ st.markdown("""
         margin-bottom: 12px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         border-left: 5px solid #ccc;
-        color: #2f3640; /* Texto oscuro dentro de la tarjeta blanca para que se lea bien */
+        color: #2f3640;
     }
     
-    /* Colores de los bordes según prioridad */
-    .prioridad-alta { border-left-color: #ee5253; }
-    .prioridad-media { border-left-color: #ffd32a; }
-    .prioridad-baja { border-left-color: #10ac84; }
+    /* Border colors based on priority */
+    .priority-high { border-left-color: #ee5253; }
+    .priority-medium { border-left-color: #ffd32a; }
+    .priority-low { border-left-color: #10ac84; }
     
-    /* Esto cambiará el estilo de todos los botones que tengan la palabra 'Eliminar' */
-    button:contains("Eliminar") {
-    color: #ff4b4b !important;
-    border-color: #ff4b4b !important;
-    }
-    
-    .header-archivado { 
-    background-color: #8395a7; color: white; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px;
+    /* Styling for the delete button specifically */
+    button:contains("Delete") {
+        color: #ff4b4b !important;
+        border-color: #ff4b4b !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. PERSISTENCIA DE DATOS ---
-def cargar_tareas():
+# --- 2. DATA PERSISTENCE ---
+def load_tasks():
     if os.path.exists('kanban_data.json'):
         with open('kanban_data.json', 'r') as f:
             return json.load(f)
     return []
 
-def guardar_tareas(tareas):
+def save_tasks(tasks):
     with open('kanban_data.json', 'w') as f:
-        json.dump(tareas, f, indent=4)
+        json.dump(tasks, f, indent=4)
 
-if 'tareas' not in st.session_state:
-    st.session_state.tareas = cargar_tareas()
+if 'tasks' not in st.session_state:
+    st.session_state.tasks = load_tasks()
 
-# --- 3. INTERFAZ: AÑADIR TAREA ---
-st.title("📋 TaskMaster: Tu Tablero Kanban")
+# --- 3. INTERFACE: ADD TASK ---
+st.title("📋 TaskMaster: Your Kanban Board")
 
 with st.sidebar:
-    st.header("➕ Nueva Tarea")
-    with st.form("form_tarea", clear_on_submit=True):
-        titulo = st.text_input("¿Qué hay que hacer?")
-        prioridad = st.selectbox("Prioridad", ["Alta", "Media", "Baja"])
-        submit = st.form_submit_button("Añadir al tablero")
+    st.header("➕ New Task")
+    with st.form("task_form", clear_on_submit=True):
+        title = st.text_input("What needs to be done?")
+        priority = st.selectbox("Priority", ["High", "Medium", "Low"])
+        submit = st.form_submit_button("Add to board")
         
-        if submit and titulo:
-            nueva = {"id": len(st.session_state.tareas), "titulo": titulo, "prioridad": prioridad, "estado": "Pendiente"}
-            st.session_state.tareas.append(nueva)
-            guardar_tareas(st.session_state.tareas)
+        if submit and title:
+            new_task = {
+                "id": len(st.session_state.tasks), 
+                "title": title, 
+                "priority": priority, 
+                "status": "Pending"
+            }
+            st.session_state.tasks.append(new_task)
+            save_tasks(st.session_state.tasks)
             st.rerun()
 
-# --- 4. EL TABLERO (CON COLUMNA DE ARCHIVO) ---
+# --- 4. THE BOARD ---
 col1, col2, col3 = st.columns(3)
 
-estados = [
-    ("⏳ Pendiente", "Pendiente", col1, "Empezar →", "header-pendiente"),
-    ("🚀 En Proceso", "En Proceso", col2, "Terminar ✅", "header-proceso"),
-    ("🎯 Terminado", "Terminado", col3, "Borrar 🔥", "header-terminado"),
+workflow = [
+    ("⏳ Pending", "Pending", col1, "Start →", "header-pending"),
+    ("🚀 In Progress", "In Progress", col2, "Finish ✅", "header-progress"),
+    ("🎯 Finished", "Finished", col3, "Delete 🔥", "header-finished"),
 ]
 
-for nombre_col, estado_id, columna, texto_boton, clase_css in estados:
-    with columna:
-        st.markdown(f'<div class="{clase_css}"><h3>{nombre_col}</h3></div>', unsafe_allow_html=True)
+for col_name, status_id, column, btn_text, css_class in workflow:
+    with column:
+        st.markdown(f'<div class="{css_class}"><h3>{col_name}</h3></div>', unsafe_allow_html=True)
         
-        tareas_estado = [t for t in st.session_state.tareas if t['estado'] == estado_id]
+        # Filter tasks by status
+        current_tasks = [t for t in st.session_state.tasks if t['status'] == status_id]
         
-        for tarea in tareas_estado:
-            clase_prioridad = f"prioridad-{tarea['prioridad'].lower()}"
+        for task in current_tasks:
+            priority_class = f"priority-{task['priority'].lower()}"
             
             st.markdown(f"""
-                <div class="task-card {clase_prioridad}">
-                    <strong>{tarea['titulo']}</strong><br>
-                    <small>Prioridad: {tarea['prioridad']}</small>
+                <div class="task-card {priority_class}">
+                    <strong>{task['title']}</strong><br>
+                    <small>Priority: {task['priority']}</small>
                 </div>
             """, unsafe_allow_html=True)
             
-            if st.button(texto_boton, key=f"btn_{tarea['id']}"):
-                # FLUJO DE ESTADOS:
-                if estado_id == "Pendiente":
-                    tarea['estado'] = "En Proceso"
-                elif estado_id == "En Proceso":
-                    tarea['estado'] = "Terminado"
-                elif estado_id == "Terminado":
-                    st.session_state.tareas.remove(tarea) # Borrado definitivo
+            if st.button(btn_text, key=f"btn_{task['id']}"):
+                # STATE FLOW:
+                if status_id == "Pending":
+                    task['status'] = "In Progress"
+                elif status_id == "In Progress":
+                    task['status'] = "Finished"
+                elif status_id == "Finished":
+                    st.session_state.tasks.remove(task) # Permanent deletion
                 
-                guardar_tareas(st.session_state.tareas)
+                save_tasks(st.session_state.tasks)
                 st.rerun()
